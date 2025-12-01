@@ -1,0 +1,51 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: services/frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: services/frontend
+        run: npm ci
+
+      - name: TypeScript check
+        working-directory: services/frontend
+        run: npm run type-check
+
+      - name: Build test
+        working-directory: services/frontend
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/cleanplanet
+            ./scripts/deploy.sh
+
+      - name: Health check
+        run: |
+          sleep 15
+          curl -f https://clean.meybz.asia/api/health || exit 1
+          curl -f https://crm.clean.meybz.asia || exit 1

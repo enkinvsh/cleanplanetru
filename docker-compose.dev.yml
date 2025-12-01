@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: cleanplanet_db_dev
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: cleanplanet
+      MYSQL_USER: cleanplanet_user
+      MYSQL_PASSWORD: userpass123
+    volumes:
+      - ./volumes/mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - cleanplanet_network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # EspoCRM
+  espocrm:
+    image: espocrm/espocrm:latest
+    container_name: cleanplanet_crm_dev
+    restart: unless-stopped
+    environment:
+      ESPOCRM_DATABASE_HOST: db
+      ESPOCRM_DATABASE_NAME: cleanplanet
+      ESPOCRM_DATABASE_USER: cleanplanet_user
+      ESPOCRM_DATABASE_PASSWORD: userpass123
+      ESPOCRM_ADMIN_USERNAME: admin
+      ESPOCRM_ADMIN_PASSWORD: admin123
+      ESPOCRM_SITE_URL: http://localhost:8080
+    volumes:
+      - ./volumes/espo_data:/var/www/html/data
+      - ./services/crm/custom:/var/www/html/custom
+    ports:
+      - "8080:80"
+    networks:
+      - cleanplanet_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Next.js Frontend (Development)
+  frontend:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+      target: dev
+    container_name: cleanplanet_frontend_dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      ESPO_API_URL: http://espocrm:80
+      ESPO_API_KEY: your_api_key_here
+      TELEGRAM_BOT_TOKEN: 8266689674:AAGdMSqd4sn66iWvaTL2WP4Mywg8Aoq1wZM
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    volumes:
+      - ./services/frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    networks:
+      - cleanplanet_network
+    depends_on:
+      - espocrm
+    command: npm run dev
+
+networks:
+  cleanplanet_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  espo_data:

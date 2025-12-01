@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 142 76% 36%;        /* Green 500 */
+  --primary-foreground: 144 61% 20%;  /* Green 800 */
+  --secondary: 25 95% 53%;       /* Orange 500 */
+  --secondary-foreground: 26 90% 37%;  /* Orange 700 */
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 142 76% 36%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 142 76% 36%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Mobile-first button styles */
+  .btn-touch {
+    @apply min-h-[44px] min-w-[44px] px-6 py-3;
+  }
+
+  /* Mobile-friendly form inputs */
+  .input-mobile {
+    @apply text-base h-12 px-4;
+  }
+
+  /* Container for mobile */
+  .container-mobile {
+    @apply px-4 mx-auto max-w-7xl;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
