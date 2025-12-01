@@ -53,25 +53,29 @@ export function LeadForm() {
         return () => clearTimeout(timer);
     }, [formData.address]);
 
-    // Поиск адреса через Yandex Geocoder
+    // Поиск адреса через Yandex Suggest API
     const searchAddress = async (query: string) => {
         if (!query || query.length < 3) return;
 
         try {
             const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
-            const url = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${encodeURIComponent(query)}&format=json&results=5`;
+            // Используем Suggest API для автоподстановки
+            const url = `https://suggest-maps.yandex.ru/v1/suggest?apikey=${apiKey}&text=${encodeURIComponent(query)}&results=5&types=house,street`;
 
             const response = await fetch(url);
-            const data: YandexGeocoderResponse = await response.json();
+            const data = await response.json();
 
-            const suggestions = data.response.GeoObjectCollection.featureMember.map(
-                (item) => item.GeoObject.description + ', ' + item.GeoObject.name
-            );
+            if (data.results && Array.isArray(data.results)) {
+                const suggestions = data.results.map((item: any) =>
+                    item.title?.text || item.subtitle?.text || item.text
+                ).filter(Boolean);
 
-            setAddressSuggestions(suggestions);
-            setShowSuggestions(suggestions.length > 0);
+                setAddressSuggestions(suggestions);
+                setShowSuggestions(suggestions.length > 0);
+            }
         } catch (error) {
             console.error('Address search error:', error);
+            setAddressSuggestions([]);
         }
     };
 
@@ -90,27 +94,56 @@ export function LeadForm() {
 
                 try {
                     const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
-                    const url = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${longitude},${latitude}&format=json&kind=house`;
+                    // Geocoder для обратного геокодирования (координаты → адрес)
+                    const url = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${longitude},${latitude}&format=json&kind=house&results=1`;
 
                     const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error('Ошибка API Яндекс.Карт');
+                    }
+
                     const data: YandexGeocoderResponse = await response.json();
 
                     const geoObject = data.response.GeoObjectCollection.featureMember[0]?.GeoObject;
                     if (geoObject) {
-                        const address = geoObject.description + ', ' + geoObject.name;
+                        const address = geoObject.name;
                         setFormData(prev => ({ ...prev, address }));
+                    } else {
+                        alert('Адрес не найден. Попробуйте ввести вручную.');
                     }
                 } catch (error) {
                     console.error('Reverse geocode error:', error);
-                    alert('Не удалось определить адрес');
+                    alert('Не удалось определить адрес. Проверьте подключение к интернету.');
                 } finally {
                     setIsLoadingLocation(false);
                 }
             },
             (error) => {
                 console.error('Geolocation error:', error);
-                alert('Не удалось получить координаты');
+                let errorMessage = 'Не удалось получить координаты. ';
+
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage += 'Вы запретили доступ к геолокации. Разрешите доступ в настройках браузера.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage += 'Информация о местоположении недоступна.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage += 'Превышено время ожидания.';
+                        break;
+                    default:
+                        errorMessage += 'Неизвестная ошибка.';
+                }
+
+                alert(errorMessage);
                 setIsLoadingLocation(false);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             }
         );
     };
