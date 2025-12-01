@@ -1,11 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import InputMask from 'react-input-mask';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, AlertCircle, MapPin } from 'lucide-react';
+
+// Yandex Geocoder API types
+interface YandexGeocoderResponse {
+    response: {
+        GeoObjectCollection: {
+            featureMember: Array<{
+                GeoObject: {
+                    name: string;
+                    description: string;
+                    Point: {
+                        pos: string;
+                    };
+                };
+            }>;
+        };
+    };
+}
 
 export function LeadForm() {
     const [formData, setFormData] = useState({
@@ -17,6 +35,101 @@ export function LeadForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const [addressSuggestions, setAddressSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+
+    // Debounce для поиска адреса
+    useEffect(() => {
+        if (formData.address.length < 3) {
+            setAddressSuggestions([]);
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            searchAddress(formData.address);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [formData.address]);
+
+    // Поиск адреса через Yandex Geocoder
+    const searchAddress = async (query: string) => {
+        if (!query || query.length < 3) return;
+
+        try {
+            const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
+            const url = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${encodeURIComponent(query)}&format=json&results=5`;
+
+            const response = await fetch(url);
+            const data: YandexGeocoderResponse = await response.json();
+
+            const suggestions = data.response.GeoObjectCollection.featureMember.map(
+                (item) => item.GeoObject.description + ', ' + item.GeoObject.name
+            );
+
+            setAddressSuggestions(suggestions);
+            setShowSuggestions(suggestions.length > 0);
+        } catch (error) {
+            console.error('Address search error:', error);
+        }
+    };
+
+    // Получение адреса по геолокации
+    const handleGetLocation = () => {
+        if (!navigator.geolocation) {
+            alert('Геолокация не поддерживается вашим браузером');
+            return;
+        }
+
+        setIsLoadingLocation(true);
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+
+                try {
+                    const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
+                    const url = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${longitude},${latitude}&format=json&kind=house`;
+
+                    const response = await fetch(url);
+                    const data: YandexGeocoderResponse = await response.json();
+
+                    const geoObject = data.response.GeoObjectCollection.featureMember[0]?.GeoObject;
+                    if (geoObject) {
+                        const address = geoObject.description + ', ' + geoObject.name;
+                        setFormData(prev => ({ ...prev, address }));
+                    }
+                } catch (error) {
+                    console.error('Reverse geocode error:', error);
+                    alert('Не удалось определить адрес');
+                } finally {
+                    setIsLoadingLocation(false);
+                }
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                alert('Не удалось получить координаты');
+                setIsLoadingLocation(false);
+            }
+        );
+    };
+
+    // Автокапитализация имени
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value;
+
+        // Разрешаем только буквы и пробелы
+        value = value.replace(/[^а-яёА-ЯЁa-zA-Z\s]/g, '');
+
+        // Капитализация каждого слова
+        value = value
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+
+        setFormData(prev => ({ ...prev, name: value }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,7 +160,6 @@ export function LeadForm() {
                 description: '',
             });
 
-            // Auto-hide success message after 5 seconds
             setTimeout(() => {
                 setStatus('idle');
             }, 5000);
@@ -60,15 +172,6 @@ export function LeadForm() {
         } finally {
             setIsSubmitting(false);
         }
-    };
-
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value,
-        }));
     };
 
     if (status === 'success') {
@@ -102,14 +205,14 @@ export function LeadForm() {
             )}
 
             <div className="space-y-2">
-                <Label htmlFor="name">Имя *</Label>
+                <Label htmlFor="name">Имя и Фамилия *</Label>
                 <Input
                     id="name"
                     name="name"
                     type="text"
                     placeholder="Иван Иванов"
                     value={formData.name}
-                    onChange={handleChange}
+                    onChange={handleNameChange}
                     required
                     disabled={isSubmitting}
                     className="input-mobile"
@@ -118,31 +221,77 @@ export function LeadForm() {
 
             <div className="space-y-2">
                 <Label htmlFor="phoneNumber">Телефон *</Label>
-                <Input
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    type="tel"
-                    placeholder="+7 (999) 123-45-67"
+                <InputMask
+                    mask="+7 (999) 999-99-99"
                     value={formData.phoneNumber}
-                    onChange={handleChange}
-                    required
+                    onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
                     disabled={isSubmitting}
-                    className="input-mobile"
-                />
+                >
+                    {(inputProps: any) => (
+                        <Input
+                            {...inputProps}
+                            id="phoneNumber"
+                            type="tel"
+                            placeholder="+7 (999) 123-45-67"
+                            required
+                            className="input-mobile"
+                        />
+                    )}
+                </InputMask>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
                 <Label htmlFor="address">Адрес</Label>
-                <Input
-                    id="address"
-                    name="address"
-                    type="text"
-                    placeholder="г. Москва, ул. Примерная, д. 1"
-                    value={formData.address}
-                    onChange={handleChange}
-                    disabled={isSubmitting}
-                    className="input-mobile"
-                />
+                <div className="flex gap-2">
+                    <div className="flex-1 relative">
+                        <Input
+                            id="address"
+                            name="address"
+                            type="text"
+                            placeholder="Начните вводить адрес..."
+                            value={formData.address}
+                            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                            onFocus={() => setShowSuggestions(addressSuggestions.length > 0)}
+                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                            disabled={isSubmitting}
+                            className="input-mobile"
+                        />
+
+                        {showSuggestions && addressSuggestions.length > 0 && (
+                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                                {addressSuggestions.map((suggestion, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                                        onClick={() => {
+                                            setFormData(prev => ({ ...prev, address: suggestion }));
+                                            setShowSuggestions(false);
+                                        }}
+                                    >
+                                        {suggestion}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleGetLocation}
+                        disabled={isSubmitting || isLoadingLocation}
+                        className="btn-touch"
+                        title="Определить мое местоположение"
+                    >
+                        {isLoadingLocation ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                            <MapPin className="h-5 w-5" />
+                        )}
+                    </Button>
+                </div>
+                <p className="text-xs text-gray-500">Начните вводить адрес для автоподстановки</p>
             </div>
 
             <div className="space-y-2">
@@ -152,7 +301,7 @@ export function LeadForm() {
                     name="description"
                     placeholder="Опишите тип и количество металлолома..."
                     value={formData.description}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                     disabled={isSubmitting}
                     rows={4}
                     className="text-base resize-none"
