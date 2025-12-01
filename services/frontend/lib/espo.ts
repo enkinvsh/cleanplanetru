@@ -30,6 +30,7 @@ export async function createLead(data: LeadData): Promise<EspoLead> {
             headers: {
                 'Content-Type': 'application/json',
                 'X-Api-Key': ESPO_API_KEY,
+                'Accept': 'application/json',
             },
             body: JSON.stringify({
                 name: data.name,
@@ -43,6 +44,7 @@ export async function createLead(data: LeadData): Promise<EspoLead> {
 
         if (!response.ok) {
             const errorText = await response.text();
+            console.error('EspoCRM error response:', errorText);
             throw new Error(`EspoCRM API error: ${response.status} - ${errorText}`);
         }
 
