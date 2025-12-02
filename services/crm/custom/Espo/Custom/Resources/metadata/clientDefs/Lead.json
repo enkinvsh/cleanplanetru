@@ -4,29 +4,7 @@
     "color": "#10B981",
     "menu": {
         "detail": {
-            "buttons": [
-                {
-                    "action": "convert",
-                    "label": "Convert",
-                    "style": "success",
-                    "acl": "edit"
-                },
-                {
-                    "label": "...",
-                    "actions": [
-                        {
-                            "action": "edit",
-                            "label": "Edit",
-                            "acl": "edit"
-                        },
-                        {
-                            "action": "delete",
-                            "label": "Delete",
-                            "acl": "delete"
-                        }
-                    ]
-                }
-            ]
+            "buttons": []
         }
     }
 }
