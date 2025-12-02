@@ -6,28 +6,23 @@
         "detail": {
             "buttons": [
                 {
-                    "action": "edit",
-                    "label": "Edit",
-                    "style": "primary",
+                    "action": "convert",
+                    "label": "Convert",
+                    "style": "success",
                     "acl": "edit"
-                },
-                {
-                    "action": "delete",
-                    "label": "Delete",
-                    "acl": "delete"
                 },
                 {
                     "label": "...",
                     "actions": [
                         {
-                            "action": "duplicate",
-                            "label": "Duplicate",
-                            "acl": "create"
+                            "action": "edit",
+                            "label": "Edit",
+                            "acl": "edit"
                         },
                         {
-                            "action": "viewLog",
-                            "label": "View Log",
-                            "acl": "read"
+                            "action": "delete",
+                            "label": "Delete",
+                            "acl": "delete"
                         }
                     ]
                 }
