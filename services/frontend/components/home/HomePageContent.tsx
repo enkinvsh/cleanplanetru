@@ -36,10 +36,10 @@ const serviceCategories = [
 ];
 
 const features = [
-    { icon: Clock, text: 'За 24 часа', color: 'from-emerald-500 to-emerald-600' },
-    { icon: Leaf, text: 'Честные весы', color: 'from-blue-500 to-blue-600' },
-    { icon: Truck, text: 'Свой транспорт', color: 'from-purple-500 to-purple-600' },
-    { icon: Shield, text: 'Легально', color: 'from-green-500 to-green-600' },
+    { icon: Clock, text: 'Выезд в день звонка', color: 'from-emerald-500 to-emerald-600' },
+    { icon: Leaf, text: 'Взвешивание при клиенте', color: 'from-blue-500 to-blue-600' },
+    { icon: Truck, text: 'Собственный автопарк', color: 'from-purple-500 to-purple-600' },
+    { icon: Shield, text: 'Все документы и лицензии', color: 'from-green-500 to-green-600' },
 ];
 
 export default function HomePageContent() {
@@ -185,12 +185,12 @@ export default function HomePageContent() {
 
                         {/* Hero */}
                         <div className="px-5 md:px-0 mb-6">
-                            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3 leading-tight">
-                                Вывезем металлолом
-                                <span className="block text-slate-600 text-3xl md:text-4xl mt-1.5">дорого и быстро</span>
-                            </h2>
+                            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3 leading-tight">
+                                Приём металлолома с вывозом
+                                <span className="block text-slate-600 text-3xl md:text-4xl mt-1.5">в Екатеринбурге</span>
+                            </h1>
                             <p className="text-slate-600 text-base md:text-lg leading-relaxed">
-                                Приедем за 24 часа. Цены уточняйте у оператора.
+                                Черный и цветной металл. Оценка по телефону.
                             </p>
                         </div>
 
@@ -218,9 +218,9 @@ export default function HomePageContent() {
                                         <FileText className="h-5 w-5 text-white" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-slate-900 text-base mb-1.5">Легальная утилизация</h4>
+                                        <h4 className="font-bold text-slate-900 text-base mb-1.5">Лицензированная утилизация</h4>
                                         <p className="text-sm text-slate-700 leading-relaxed">
-                                            Весь металлолом отправляется на сертифицированные заводы. Все документы в порядке.
+                                            Работаем с аккредитованными переработчиками. Полный пакет документов.
                                         </p>
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@ export default function HomePageContent() {
                                         Оставить заявку
                                     </h3>
                                     <p className="text-slate-600 text-sm mb-5">
-                                        Перезвоним в течение 5 минут
+                                        Оценим стоимость и согласуем выезд
                                     </p>
 
                                     <div className="space-y-3.5">

@@ -1,18 +1,18 @@
 {
     "name": "Чистая Планета - Вывоз металлолома",
     "short_name": "Чистая Планета",
-    "description": "Быстрый и выгодный вывоз металлолома в Алматы. Приедем в течение 24 часов, честные весы, высокие цены.",
+    "description": "Приём металлолома в Екатеринбурге. Черный и цветной металл, собственный автопарк, выезд в день обращения.",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
     "background_color": "#e0e0d8",
-    "theme_color": "#10B981",
+    "theme_color": "#059669",
     "orientation": "portrait-primary",
     "categories": [
         "business",
         "utilities"
     ],
-    "lang": "ru",
+    "lang": "ru-RU",
     "dir": "ltr",
     "icons": [
         {
@@ -46,7 +46,7 @@
         {
             "name": "Оставить заявку",
             "short_name": "Заявка",
-            "description": "Быстро оставить заявку на вывоз",
+            "description": "Оставить заявку на приём металлолома",
             "url": "/?action=submit",
             "icons": [
                 {

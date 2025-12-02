@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import HomePageContent from "@/components/home/HomePageContent";
 
 export const metadata: Metadata = {
-    title: "Вывоз металлолома в Алматы | Чистая Планета",
-    description: "Быстрый и выгодный вывоз металлолома в Алматы. Приедем в течение 24 часов, честные весы, высокие цены. Оставьте заявку на сайте!",
+    title: "Вывоз металлолома в Екатеринбурге | Чистая Планета",
+    description: "Приём чёрного и цветного металла с вывозом. Работаем 22 года. Собственный автопарк, оценка по телефону, выезд в день обращения.",
 };
 
 export default function HomePage() {
