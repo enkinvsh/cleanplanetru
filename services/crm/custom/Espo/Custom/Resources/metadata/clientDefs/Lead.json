@@ -5,12 +5,31 @@
     "menu": {
         "detail": {
             "buttons": [
-                "__APPEND__",
                 {
-                    "action": "convert",
-                    "label": "Convert",
-                    "style": "success",
+                    "action": "edit",
+                    "label": "Edit",
+                    "style": "primary",
                     "acl": "edit"
+                },
+                {
+                    "action": "delete",
+                    "label": "Delete",
+                    "acl": "delete"
+                },
+                {
+                    "label": "...",
+                    "actions": [
+                        {
+                            "action": "duplicate",
+                            "label": "Duplicate",
+                            "acl": "create"
+                        },
+                        {
+                            "action": "viewLog",
+                            "label": "View Log",
+                            "acl": "read"
+                        }
+                    ]
                 }
             ]
         }
