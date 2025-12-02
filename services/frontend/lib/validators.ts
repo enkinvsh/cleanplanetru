@@ -14,16 +14,9 @@ export const leadFormSchema = z.object({
             return digits.length >= 10 && digits.length <= 15;
         }, 'Номер должен содержать от 10 до 15 цифр'),
 
-    address: z.string()
-        .optional()
-        .refine((val) => !val || val.length >= 5, {
-            message: 'Адрес должен содержать минимум 5 символов'
-        })
-        .transform((val) => val || ''),
+    address: z.string().optional(),
 
-    description: z.string()
-        .optional()
-        .transform((val) => val || ''),
+    description: z.string().optional(),
 });
 
 export type LeadFormData = z.infer<typeof leadFormSchema>;
