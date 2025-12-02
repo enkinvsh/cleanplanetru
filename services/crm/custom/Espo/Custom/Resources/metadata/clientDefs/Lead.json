@@ -1,5 +1,18 @@
 {
-    "controller": "controllers/record",
+    "controller": "Crm:Controllers.Lead",
     "iconClass": "fas fa-leaf",
-    "color": "#10B981"
+    "color": "#10B981",
+    "menu": {
+        "detail": {
+            "buttons": [
+                "__APPEND__",
+                {
+                    "action": "convert",
+                    "label": "Convert",
+                    "style": "success",
+                    "acl": "edit"
+                }
+            ]
+        }
+    }
 }
