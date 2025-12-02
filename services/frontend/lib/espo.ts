@@ -33,7 +33,9 @@ export async function createLead(data: LeadData): Promise<EspoLead> {
                 'Accept': 'application/json',
             },
             body: JSON.stringify({
-                name: data.name,
+                firstName: data.name.trim(),
+                lastName: 'Сайт',
+                salutationName: 'М',
                 phoneNumber: data.phoneNumber,
                 addressStreet: data.address || '',
                 description: data.description || '',
