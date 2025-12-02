@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, AlertCircle, User, Phone, MapPin, FileText } from 'lucide-react';
 
 export function LeadForm() {
     const [formData, setFormData] = useState({
@@ -100,7 +100,7 @@ export function LeadForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
             {status === 'error' && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
                     <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -109,74 +109,85 @@ export function LeadForm() {
             )}
 
             <div className="space-y-2">
-                <Label htmlFor="name">Имя и Фамилия *</Label>
-                <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="Иван Иванов"
-                    value={formData.name}
-                    onChange={handleNameChange}
-                    required
-                    disabled={isSubmitting}
-                    className="input-mobile"
-                />
+                <Label htmlFor="name" className="text-brand-gray-700 font-medium">Имя и Фамилия *</Label>
+                <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-gray-400" />
+                    <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Иван Иванов"
+                        value={formData.name}
+                        onChange={handleNameChange}
+                        required
+                        disabled={isSubmitting}
+                        className="input-mobile pl-10 border-brand-gray-200 focus:border-brand-green-500 focus:ring-brand-green-500"
+                    />
+                </div>
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Телефон *</Label>
-                <InputMask
-                    mask="+7 (999) 999-99-99"
-                    value={formData.phoneNumber}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                    disabled={isSubmitting}
-                >
-                    {(inputProps: any) => (
-                        <Input
-                            {...inputProps}
-                            id="phoneNumber"
-                            type="tel"
-                            placeholder="+7 (999) 123-45-67"
-                            required
-                            className="input-mobile"
-                        />
-                    )}
-                </InputMask>
+                <Label htmlFor="phoneNumber" className="text-brand-gray-700 font-medium">Телефон *</Label>
+                <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-gray-400" />
+                    <InputMask
+                        mask="+7 (999) 999-99-99"
+                        value={formData.phoneNumber}
+                        onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                        disabled={isSubmitting}
+                    >
+                        {(inputProps: any) => (
+                            <Input
+                                {...inputProps}
+                                id="phoneNumber"
+                                type="tel"
+                                placeholder="+7 (999) 123-45-67"
+                                required
+                                className="input-mobile pl-10 border-brand-gray-200 focus:border-brand-green-500 focus:ring-brand-green-500"
+                            />
+                        )}
+                    </InputMask>
+                </div>
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="address">Адрес</Label>
-                <Input
-                    id="address"
-                    name="address"
-                    type="text"
-                    placeholder="Введите ваш адрес"
-                    value={formData.address}
-                    onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                    disabled={isSubmitting}
-                    className="input-mobile"
-                />
-                <p className="text-xs text-gray-500">Укажите адрес для вывоза металлолома</p>
+                <Label htmlFor="address" className="text-brand-gray-700 font-medium">Адрес</Label>
+                <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-gray-400" />
+                    <Input
+                        id="address"
+                        name="address"
+                        type="text"
+                        placeholder="Улица, дом, подъезд..."
+                        value={formData.address}
+                        onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                        disabled={isSubmitting}
+                        className="input-mobile pl-10 border-brand-gray-200 focus:border-brand-green-500 focus:ring-brand-green-500"
+                    />
+                </div>
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="description">Описание</Label>
-                <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Опишите тип и количество металлолома..."
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    disabled={isSubmitting}
-                    rows={4}
-                    className="text-base resize-none"
-                />
+                <Label htmlFor="description" className="text-brand-gray-700 font-medium">Что нужно вывезти?</Label>
+                <div className="relative">
+                    <FileText className="absolute left-3 top-3 h-5 w-5 text-brand-gray-400" />
+                    <Textarea
+                        id="description"
+                        name="description"
+                        placeholder="Например: старая ванна, батареи, холодильник..."
+                        value={formData.description}
+                        onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                        disabled={isSubmitting}
+                        rows={3}
+                        className="text-base resize-none pl-10 border-brand-gray-200 focus:border-brand-green-500 focus:ring-brand-green-500 min-h-[100px]"
+                    />
+                </div>
             </div>
 
             <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full btn-touch bg-brand-green-600 hover:bg-brand-green-700 text-white"
+                className="w-full btn-touch bg-brand-green-600 hover:bg-brand-green-700 text-white font-semibold shadow-lg shadow-brand-green-600/20 transition-all hover:shadow-brand-green-600/40 hover:-translate-y-0.5"
             >
                 {isSubmitting ? (
                     <>
@@ -188,8 +199,8 @@ export function LeadForm() {
                 )}
             </Button>
 
-            <p className="text-xs text-brand-gray-500 text-center">
-                Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
+            <p className="text-xs text-brand-gray-400 text-center leading-relaxed">
+                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и обработки данных
             </p>
         </form>
     );

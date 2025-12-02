@@ -3,7 +3,8 @@ import { LeafyGreen, Phone, Clock, MapPin } from "lucide-react";
 import { LeadForm } from "@/components/forms/LeadForm";
 
 export const metadata: Metadata = {
-    title: "Чистая Планета - Главная",
+    title: "Вывоз металлолома в Алматы | Чистая Планета",
+    description: "Быстрый и выгодный вывоз металлолома в Алматы. Приедем в течение 24 часов, честные весы, высокие цены. Оставьте заявку на сайте!",
 };
 
 export default function HomePage() {
@@ -31,41 +32,54 @@ export default function HomePage() {
             </header>
 
             {/* Hero Section */}
-            <section className="container-mobile py-8 md:py-12">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl md:text-4xl font-bold text-brand-green-900 mb-4">
-                        Вывоз металлолома
-                    </h2>
-                    <p className="text-lg text-brand-gray-600 max-w-2xl mx-auto">
-                        Быстро, удобно, выгодно. Оставьте заявку, и мы приедем в удобное для вас время.
-                    </p>
-                </div>
+            <section className="container-mobile py-8 md:py-12 lg:py-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    {/* Left Column: Content */}
+                    <div className="space-y-8">
+                        <div className="text-center lg:text-left">
+                            <h2 className="text-4xl md:text-5xl font-bold text-brand-green-900 mb-6 leading-tight">
+                                Вывоз металлолома <br className="hidden lg:block" />
+                                <span className="text-brand-green-600">дорого и быстро</span>
+                            </h2>
+                            <p className="text-lg md:text-xl text-brand-gray-600 max-w-xl mx-auto lg:mx-0">
+                                Оставьте заявку прямо сейчас, и мы приедем в удобное для вас время. Работаем без выходных.
+                            </p>
+                        </div>
 
-                {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    <FeatureCard
-                        icon={<Clock className="h-8 w-8" />}
-                        title="Быстро"
-                        description="Приедем в течение 24 часов после заявки"
-                    />
-                    <FeatureCard
-                        icon={<MapPin className="h-8 w-8" />}
-                        title="Удобно"
-                        description="Работаем по всему городу"
-                    />
-                    <FeatureCard
-                        icon={<LeafyGreen className="h-8 w-8" />}
-                        title="Экологично"
-                        description="Утилизация с заботой о природе"
-                    />
-                </div>
+                        {/* Features Grid - Horizontal on mobile, Grid on desktop */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4">
+                            <FeatureCard
+                                icon={<Clock className="h-6 w-6" />}
+                                title="Быстро"
+                                description="Приезд в течение 24 часов"
+                            />
+                            <FeatureCard
+                                icon={<MapPin className="h-6 w-6" />}
+                                title="Удобно"
+                                description="Работаем по всему городу"
+                            />
+                            <FeatureCard
+                                icon={<LeafyGreen className="h-6 w-6" />}
+                                title="Экологично"
+                                description="Честная утилизация"
+                            />
+                        </div>
+                    </div>
 
-                {/* Lead Form */}
-                <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                    <h3 className="text-2xl font-bold text-brand-green-900 mb-6 text-center">
-                        Оставить заявку
-                    </h3>
-                    <LeadForm />
+                    {/* Right Column: Form */}
+                    <div className="lg:sticky lg:top-24">
+                        <div className="bg-white rounded-2xl shadow-xl border border-brand-green-100 p-6 md:p-8">
+                            <div className="text-center mb-6">
+                                <h3 className="text-2xl font-bold text-brand-green-900">
+                                    Оставить заявку
+                                </h3>
+                                <p className="text-brand-gray-500 text-sm mt-2">
+                                    Менеджер перезвонит в течение 5 минут
+                                </p>
+                            </div>
+                            <LeadForm />
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -108,11 +122,13 @@ function FeatureCard({
     description: string;
 }) {
     return (
-        <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div className="flex flex-col items-center text-center">
-                <div className="text-brand-green-600 mb-4">{icon}</div>
-                <h3 className="font-bold text-lg text-brand-green-900 mb-2">{title}</h3>
-                <p className="text-brand-gray-600 text-sm">{description}</p>
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-brand-green-50 flex items-center gap-4 hover:shadow-md transition-all">
+            <div className="bg-brand-green-100 p-3 rounded-full text-brand-green-700 shrink-0">
+                {icon}
+            </div>
+            <div className="text-left">
+                <h3 className="font-bold text-brand-green-900">{title}</h3>
+                <p className="text-brand-gray-600 text-sm leading-tight">{description}</p>
             </div>
         </div>
     );
