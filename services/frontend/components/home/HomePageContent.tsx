@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import InputMask from 'react-input-mask';
 import { Phone, Clock, MapPin, Scale, Shield, Truck, Leaf, Zap, Droplet, Cpu, CheckCircle2, AlertCircle, Loader2, User, FileText } from 'lucide-react';
 

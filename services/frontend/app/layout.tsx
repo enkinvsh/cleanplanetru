@@ -39,6 +39,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="ru">
+            <head>
+                <link rel="dns-prefetch" href="https://crm.meybz.asia" />
+            </head>
             <body className={inter.className}>{children}</body>
         </html>
     );
