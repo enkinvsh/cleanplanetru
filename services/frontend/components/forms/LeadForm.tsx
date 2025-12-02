@@ -8,23 +8,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, CheckCircle2, AlertCircle, MapPin } from 'lucide-react';
 
-// Yandex Geocoder API types
-interface YandexGeocoderResponse {
-    response: {
-        GeoObjectCollection: {
-            featureMember: Array<{
-                GeoObject: {
-                    name: string;
-                    description: string;
-                    Point: {
-                        pos: string;
-                    };
-                };
-            }>;
-        };
-    };
-}
-
 export function LeadForm() {
     const [formData, setFormData] = useState({
         name: '',
@@ -53,23 +36,28 @@ export function LeadForm() {
         return () => clearTimeout(timer);
     }, [formData.address]);
 
-    // Поиск адреса через Yandex Suggest API
+    // Поиск адреса через DaData API
     const searchAddress = async (query: string) => {
         if (!query || query.length < 3) return;
 
         try {
-            const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
-            // Используем Suggest API для автоподстановки
-            const url = `https://suggest-maps.yandex.ru/v1/suggest?apikey=${apiKey}&text=${encodeURIComponent(query)}&results=5&types=house,street`;
+            const apiKey = process.env.NEXT_PUBLIC_DADATA_API_KEY;
+            const url = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address';
 
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Token ${apiKey}`,
+                },
+                body: JSON.stringify({ query, count: 5 }),
+            });
+
             const data = await response.json();
 
-            if (data.results && Array.isArray(data.results)) {
-                const suggestions = data.results.map((item: any) =>
-                    item.title?.text || item.subtitle?.text || item.text
-                ).filter(Boolean);
-
+            if (data.suggestions && Array.isArray(data.suggestions)) {
+                const suggestions = data.suggestions.map((item: any) => item.value);
                 setAddressSuggestions(suggestions);
                 setShowSuggestions(suggestions.length > 0);
             }
@@ -79,7 +67,7 @@ export function LeadForm() {
         }
     };
 
-    // Получение адреса по геолокации
+    // Получение адреса по геолокации через DaData
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
             alert('Геолокация не поддерживается вашим браузером');
@@ -93,21 +81,27 @@ export function LeadForm() {
                 const { latitude, longitude } = position.coords;
 
                 try {
-                    const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
-                    // Geocoder для обратного геокодирования (координаты → адрес)
-                    const url = `https://geocode-maps.yandex.ru/1.x/?apikey=${apiKey}&geocode=${longitude},${latitude}&format=json&kind=house&results=1`;
+                    const apiKey = process.env.NEXT_PUBLIC_DADATA_API_KEY;
+                    const url = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address';
 
-                    const response = await fetch(url);
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': `Token ${apiKey}`,
+                        },
+                        body: JSON.stringify({ lat: latitude, lon: longitude, count: 1 }),
+                    });
 
                     if (!response.ok) {
-                        throw new Error('Ошибка API Яндекс.Карт');
+                        throw new Error('Ошибка API DaData');
                     }
 
-                    const data: YandexGeocoderResponse = await response.json();
+                    const data = await response.json();
 
-                    const geoObject = data.response.GeoObjectCollection.featureMember[0]?.GeoObject;
-                    if (geoObject) {
-                        const address = geoObject.name;
+                    if (data.suggestions && data.suggestions.length > 0) {
+                        const address = data.suggestions[0].value;
                         setFormData(prev => ({ ...prev, address }));
                     } else {
                         alert('Адрес не найден. Попробуйте ввести вручную.');
