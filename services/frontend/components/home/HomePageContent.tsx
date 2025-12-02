@@ -216,7 +216,7 @@ export default function HomePageContent() {
                         <div className="px-5 md:px-0 bg-gradient-to-r from-emerald-50/80 to-green-50/80 backdrop-blur border border-emerald-200/50 rounded-3xl p-5 mb-6 md:mb-0 shadow-lg">
                             <div className="flex items-start gap-3.5">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
-                                    <Zap className="h-5 w-5 text-white" />
+                                    <Shield className="h-5 w-5 text-white" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 text-base mb-1.5">Легальная утилизация</h4>
@@ -236,11 +236,11 @@ export default function HomePageContent() {
                                     <h3 className="text-2xl font-bold text-slate-900 mb-2">
                                         Оставить заявку
                                     </h3>
-                                    <p className="text-slate-600 text-sm mb-6">
+                                    <p className="text-slate-600 text-sm mb-5">
                                         Перезвоним в течение 5 минут
                                     </p>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3.5">
                                         {status === 'error' && (
                                             <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
                                                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -261,7 +261,7 @@ export default function HomePageContent() {
                                                     onChange={handleNameChange}
                                                     required
                                                     disabled={isSubmitting}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-base shadow-sm"
+                                                    className="w-full pl-12 pr-4 py-3 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-base shadow-sm"
                                                 />
                                             </div>
                                         </div>
@@ -284,7 +284,7 @@ export default function HomePageContent() {
                                                             type="tel"
                                                             placeholder="+7 (999) 123-45-67"
                                                             required
-                                                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-base shadow-sm"
+                                                            className="w-full pl-12 pr-4 py-3 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-base shadow-sm"
                                                         />
                                                     )}
                                                 </InputMask>
@@ -303,7 +303,7 @@ export default function HomePageContent() {
                                                     value={formData.address}
                                                     onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                                                     disabled={isSubmitting}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-base shadow-sm"
+                                                    className="w-full pl-12 pr-4 py-3 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-base shadow-sm"
                                                 />
                                             </div>
                                         </div>
@@ -320,7 +320,7 @@ export default function HomePageContent() {
                                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                                     disabled={isSubmitting}
                                                     rows={3}
-                                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none text-base shadow-sm"
+                                                    className="w-full pl-12 pr-4 py-3 bg-slate-50/80 border border-slate-200/50 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none text-base shadow-sm"
                                                 />
                                             </div>
                                         </div>
