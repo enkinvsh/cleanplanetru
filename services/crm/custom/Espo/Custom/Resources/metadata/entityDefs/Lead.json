@@ -10,13 +10,13 @@
         "source": {
             "type": "enum",
             "options": [
-                "Website",
+                "Сайт",
                 "Telegram",
-                "Phone",
-                "Referral",
-                "Other"
+                "Телефон",
+                "Реферал",
+                "Другое"
             ],
-            "default": "Website",
+            "default": "Сайт",
             "required": true,
             "audited": true
         },

@@ -38,7 +38,7 @@ export async function createLead(data: LeadData): Promise<EspoLead> {
                 addressStreet: data.address || '',
                 description: data.description || '',
                 status: 'New',
-                source: 'Website',
+                source: 'Сайт',
             }),
         });
 
