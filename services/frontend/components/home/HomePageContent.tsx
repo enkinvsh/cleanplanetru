@@ -125,7 +125,7 @@ export default function HomePageContent() {
         <div className="min-h-screen w-full" style={{ background: '#e0e0d8' }}>
             <div className="max-w-md md:max-w-7xl mx-auto min-h-screen bg-[#e0e0d8] md:shadow-none shadow-2xl relative">
                 {/* Header */}
-                <header className="bg-white/60 backdrop-blur-xl border-b border-white/40 sticky top-0 z-50">
+                <header className="bg-white/60 backdrop-blur-lg border-b border-white/40 sticky top-0 z-50">
                     <div className="px-5 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">

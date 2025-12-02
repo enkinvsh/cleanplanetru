@@ -1,7 +1,7 @@
 // Clean Planet PWA - Service Worker
 // Version: 3.0.0
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v1.1';
 const CACHE_NAME = `clean-planet-${CACHE_VERSION}`;
 
 // Assets to cache on install
