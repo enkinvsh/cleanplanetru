@@ -37,9 +37,9 @@ const serviceCategories = [
 
 const features = [
     { icon: Clock, text: 'За 24 часа', color: 'from-emerald-500 to-emerald-600' },
-    { icon: Shield, text: 'Честные весы', color: 'from-blue-500 to-blue-600' },
+    { icon: Leaf, text: 'Честные весы', color: 'from-blue-500 to-blue-600' },
     { icon: Truck, text: 'Свой транспорт', color: 'from-purple-500 to-purple-600' },
-    { icon: Leaf, text: 'Легально', color: 'from-green-500 to-green-600' },
+    { icon: Shield, text: 'Легально', color: 'from-green-500 to-green-600' },
 ];
 
 export default function HomePageContent() {
@@ -194,7 +194,7 @@ export default function HomePageContent() {
                             </p>
                         </div>
 
-                        {/* Features */}
+                        {/* Features + Eco Badge */}
                         <div className="px-5 md:px-0 grid grid-cols-2 gap-3 mb-6">
                             {features.map((item, idx) => {
                                 const Icon = item.icon;
@@ -210,19 +210,19 @@ export default function HomePageContent() {
                                     </div>
                                 );
                             })}
-                        </div>
 
-                        {/* Eco Badge - spans 2 columns */}
-                        <div className="px-5 md:px-0 col-span-2 bg-gradient-to-r from-emerald-50/80 to-green-50/80 backdrop-blur border border-emerald-200/50 rounded-3xl p-5 mb-6 md:mb-0 shadow-lg hover:shadow-xl transition-all">
-                            <div className="flex items-center gap-3.5">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
-                                    <Shield className="h-5 w-5 text-white" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-slate-900 text-base mb-1.5">Легальная утилизация</h4>
-                                    <p className="text-sm text-slate-700 leading-relaxed">
-                                        Весь металлолом отправляется на сертифицированные заводы. Все документы в порядке.
-                                    </p>
+                            {/* Eco Badge - spans 2 columns */}
+                            <div className="col-span-2 bg-gradient-to-r from-emerald-50/80 to-green-50/80 backdrop-blur border border-emerald-200/50 rounded-3xl p-5 shadow-lg hover:shadow-xl transition-all">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                                        <FileText className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-900 text-base mb-1.5">Легальная утилизация</h4>
+                                        <p className="text-sm text-slate-700 leading-relaxed">
+                                            Весь металлолом отправляется на сертифицированные заводы. Все документы в порядке.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
