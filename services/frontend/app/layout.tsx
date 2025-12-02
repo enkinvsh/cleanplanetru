@@ -41,6 +41,37 @@ export default function RootLayout({
         <html lang="ru">
             <head>
                 <link rel="dns-prefetch" href="https://crm.meybz.asia" />
+                <script dangerouslySetInnerHTML={{
+                    __html: `
+                        if ('serviceWorker' in navigator) {
+                            window.addEventListener('load', () => {
+                                navigator.serviceWorker.register('/sw.js')
+                                    .then(reg => {
+                                        console.log('[PWA] Service Worker registered');
+                                        
+                                        // Check for updates
+                                        reg.addEventListener('updatefound', () => {
+                                            const newWorker = reg.installing;
+                                            newWorker.addEventListener('statechange', () => {
+                                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                                    console.log('[PWA] New version available');
+                                                }
+                                            });
+                                        });
+                                    })
+                                    .catch(err => console.error('[PWA] SW registration failed:', err));
+                            });
+                        }
+                        
+                        // Install prompt
+                        let deferredPrompt;
+                        window.addEventListener('beforeinstallprompt', (e) => {
+                            e.preventDefault();
+                            deferredPrompt = e;
+                            console.log('[PWA] Install prompt available');
+                        });
+                    `
+                }} />
             </head>
             <body className={inter.className}>{children}</body>
         </html>
