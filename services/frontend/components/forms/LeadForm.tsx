@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, CheckCircle2, AlertCircle, MapPin } from 'lucide-react';
+import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export function LeadForm() {
     const [formData, setFormData] = useState({
@@ -18,119 +18,6 @@ export function LeadForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
-    const [addressSuggestions, setAddressSuggestions] = useState<string[]>([]);
-    const [showSuggestions, setShowSuggestions] = useState(false);
-    const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-
-    // Debounce для поиска адреса
-    useEffect(() => {
-        if (formData.address.length < 3) {
-            setAddressSuggestions([]);
-            return;
-        }
-
-        const timer = setTimeout(() => {
-            searchAddress(formData.address);
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, [formData.address]);
-
-    // Поиск адреса через backend API (proxy для DaData)
-    const searchAddress = async (query: string) => {
-        if (!query || query.length < 3) return;
-
-        try {
-            const response = await fetch('/api/address/suggest', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ query }),
-            });
-
-            const data = await response.json();
-
-            if (data.suggestions && Array.isArray(data.suggestions)) {
-                const suggestions = data.suggestions.map((item: any) => item.value);
-                setAddressSuggestions(suggestions);
-                setShowSuggestions(suggestions.length > 0);
-            }
-        } catch (error) {
-            console.error('Address search error:', error);
-            setAddressSuggestions([]);
-        }
-    };
-
-    // Получение адреса по геолокации через DaData
-    const handleGetLocation = () => {
-        if (!navigator.geolocation) {
-            alert('Геолокация не поддерживается вашим браузером');
-            return;
-        }
-
-        setIsLoadingLocation(true);
-
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-
-                try {
-                    const response = await fetch('/api/address/geolocate', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ lat: latitude, lon: longitude }),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Ошибка определения адреса');
-                    }
-
-                    const data = await response.json();
-
-                    if (data.suggestions && data.suggestions.length > 0) {
-                        const address = data.suggestions[0].value;
-                        setFormData(prev => ({ ...prev, address }));
-                    } else {
-                        alert('Адрес не найден. Попробуйте ввести вручную.');
-                    }
-                } catch (error) {
-                    console.error('Reverse geocode error:', error);
-                    alert('Не удалось определить адрес. Проверьте подключение к интернету.');
-                } finally {
-                    setIsLoadingLocation(false);
-                }
-            },
-            (error) => {
-                console.error('Geolocation error:', error);
-                let errorMessage = 'Не удалось получить координаты. ';
-
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage += 'Вы запретили доступ к геолокации. Разрешите доступ в настройках браузера.';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage += 'Информация о местоположении недоступна.';
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage += 'Превышено время ожидания.';
-                        break;
-                    default:
-                        errorMessage += 'Неизвестная ошибка.';
-                }
-
-                alert(errorMessage);
-                setIsLoadingLocation(false);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
-    };
 
     // Автокапитализация имени
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -257,58 +144,19 @@ export function LeadForm() {
                 </InputMask>
             </div>
 
-            <div className="space-y-2 relative">
+            <div className="space-y-2">
                 <Label htmlFor="address">Адрес</Label>
-                <div className="flex gap-2">
-                    <div className="flex-1 relative">
-                        <Input
-                            id="address"
-                            name="address"
-                            type="text"
-                            placeholder="Начните вводить адрес..."
-                            value={formData.address}
-                            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                            onFocus={() => setShowSuggestions(addressSuggestions.length > 0)}
-                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                            disabled={isSubmitting}
-                            className="input-mobile"
-                        />
-
-                        {showSuggestions && addressSuggestions.length > 0 && (
-                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                                {addressSuggestions.map((suggestion, index) => (
-                                    <button
-                                        key={index}
-                                        type="button"
-                                        className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                                        onClick={() => {
-                                            setFormData(prev => ({ ...prev, address: suggestion }));
-                                            setShowSuggestions(false);
-                                        }}
-                                    >
-                                        {suggestion}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleGetLocation}
-                        disabled={isSubmitting || isLoadingLocation}
-                        className="btn-touch"
-                        title="Определить мое местоположение"
-                    >
-                        {isLoadingLocation ? (
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                            <MapPin className="h-5 w-5" />
-                        )}
-                    </Button>
-                </div>
-                <p className="text-xs text-gray-500">Начните вводить адрес для автоподстановки</p>
+                <Input
+                    id="address"
+                    name="address"
+                    type="text"
+                    placeholder="Введите ваш адрес"
+                    value={formData.address}
+                    onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                    disabled={isSubmitting}
+                    className="input-mobile"
+                />
+                <p className="text-xs text-gray-500">Укажите адрес для вывоза металлолома</p>
             </div>
 
             <div className="space-y-2">
