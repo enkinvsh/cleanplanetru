@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white to-brand-green-50">
+        <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-brand-green-50">
             {/* Header */}
             <header className="bg-white shadow-sm sticky top-0 z-50">
                 <div className="container-mobile py-4">
@@ -32,7 +32,7 @@ export default function HomePage() {
             </header>
 
             {/* Hero Section */}
-            <section className="container-mobile py-8 md:py-12 lg:py-16">
+            <main className="flex-grow container-mobile py-8 md:py-12 lg:py-16">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                     {/* Left Column: Content */}
                     <div className="space-y-8">
@@ -81,10 +81,10 @@ export default function HomePage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </main>
 
             {/* Footer */}
-            <footer className="bg-brand-green-900 text-white py-8 mt-16">
+            <footer className="bg-brand-green-900 text-white py-8 mt-auto">
                 <div className="container-mobile">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
