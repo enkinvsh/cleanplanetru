@@ -36,22 +36,17 @@ export function LeadForm() {
         return () => clearTimeout(timer);
     }, [formData.address]);
 
-    // Поиск адреса через DaData API
+    // Поиск адреса через backend API (proxy для DaData)
     const searchAddress = async (query: string) => {
         if (!query || query.length < 3) return;
 
         try {
-            const apiKey = process.env.NEXT_PUBLIC_DADATA_API_KEY;
-            const url = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address';
-
-            const response = await fetch(url, {
+            const response = await fetch('/api/address/suggest', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Token ${apiKey}`,
                 },
-                body: JSON.stringify({ query, count: 5 }),
+                body: JSON.stringify({ query }),
             });
 
             const data = await response.json();
@@ -81,21 +76,16 @@ export function LeadForm() {
                 const { latitude, longitude } = position.coords;
 
                 try {
-                    const apiKey = process.env.NEXT_PUBLIC_DADATA_API_KEY;
-                    const url = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address';
-
-                    const response = await fetch(url, {
+                    const response = await fetch('/api/address/geolocate', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': `Token ${apiKey}`,
                         },
-                        body: JSON.stringify({ lat: latitude, lon: longitude, count: 1 }),
+                        body: JSON.stringify({ lat: latitude, lon: longitude }),
                     });
 
                     if (!response.ok) {
-                        throw new Error('Ошибка API DaData');
+                        throw new Error('Ошибка определения адреса');
                     }
 
                     const data = await response.json();
