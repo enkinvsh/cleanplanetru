@@ -45,3 +45,13 @@ coverage/
 # Misc
 *.tsbuildinfo
 next-env.d.ts
+
+# AI artifacts
+.gemini/
+
+# Backup files
+*.md~
+*.bak
+
+# Bundle analyzer
+.next/analyze/
